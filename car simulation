@@ -1,0 +1,97 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+
+using namespace std;
+
+#define RIGHT 1
+#define LEFT -1
+#define REVERSE_DIRECTION -6
+#define AUTOMATIC_MODE 0
+#define MANNUAL_MODE 1
+#define SAVEFILE "carstate.txt"
+#define LOADFILE "carstate.txt"
+
+struct CarStats
+{
+	int logentry = 0; //keeps a record of the position it was loaded from, from the log file
+	int speed = 0; //assigning initial values - C++11 extension
+	int gear = 1; 	//reverse (speed -1 to -10)
+			//one (speed 0 to 10)
+			//two (speed 5 to 25)
+			//three (speed 20 to 40)
+			//four (speed 40 to 60)
+			//five (speed 45 to 80). Max speed of car is 80
+	int direction = 0; // similar to clock face 0 = 12 = straight on. All other directions = 1-11
+	int gearmode = AUTOMATIC_MODE;
+};
+
+void saveCarState(CarStats MyCar)
+{
+	ofstream outputfile;
+
+	outputfile.open(SAVEFILE, ios::app);
+
+	cout << "Saving state..." << endl;
+
+	outputfile << "****************************************" << endl;
+	outputfile << "LOG ENTRY # " << MyCar.logentry + 1 << endl;
+	outputfile << MyCar.speed << endl;
+	outputfile << MyCar.gear << endl;
+	outputfile << MyCar.direction << endl;
+	outputfile << MyCar.gearmode << endl;
+	outputfile << "****************************************" << endl;
+
+	outputfile.close();
+
+}
+
+CarStats loadCarState(CarStats MyCar)
+{
+	ifstream inputfile;
+	char choice;
+	string dump;
+	CarStats Blank;
+
+	inputfile.open(LOADFILE);
+
+	if (!inputfile) return MyCar; //input file does not exist
+
+	inputfile >> dump; //get rind of a line of stars
+	inputfile >> dump; //get rid of 'LOG'
+	inputfile >> dump; //get rid of 'ENTRY'
+	inputfile >> dump; //get rid of '#'
+
+	while (inputfile >> MyCar.logentry) //loop until last record found
+	{
+		
+		inputfile >> MyCar.speed;
+		inputfile >> MyCar.gear;
+		inputfile >> MyCar.direction;
+		inputfile >> MyCar.gearmode;
+
+		inputfile >> dump; //get rind of a line of stars
+		inputfile >> dump; //get rind of a line of stars
+		inputfile >> dump; //get rid of 'LOG'
+		inputfile >> dump; //get rid of 'ENTRY'
+		inputfile >> dump; //get rid of '#'
+	}
+
+ 	Blank.logentry = MyCar.logentry; //logentry needs to be preserved even if details are not loaded
+
+	cout << "State file exists!" << endl;
+	cout << "Do you want to load state? (y/n) ";
+	cin >> choice;
+	if (choice != 'Y' && choice != 'y') return Blank;
+
+	cout << "Loading file..." << endl;
+
+	cout << "Speed: " << MyCar.speed << endl;
+	cout << "Gear: " << MyCar.gear << endl;
+	cout << "Direction: " << MyCar.direction << endl;
+	cout << "gearmode: " << MyCar.gearmode << endl;
+
+	inputfile.close();
+
+	return MyCar;
+}
