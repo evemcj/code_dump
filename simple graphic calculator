@@ -1,0 +1,64 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+void kvadrats()
+{
+	int kvmala;
+	cout << "Ievadi kvadrata malu" << endl;
+	cin >> kvmala;
+	cout << kvmala * kvmala;
+}
+void taisnstrijsturis()
+{
+	double trmala1, trmala2;
+	cout << "Ievadi trijstura katetes" << endl;
+	cin >> trmala1 >> trmala2;
+	cout << (trmala1 * trmala2) / 2;
+}
+void taisnsturis()
+{
+	double taisnstmala1, taisnstmala2;
+	cout << "Ievadi taisnstura malas" << endl;
+	cin >> taisnstmala1>> taisnstmala2;
+	cout << taisnstmala1* taisnstmala2;
+}
+void vienadmalu()
+{
+	double mala;
+	cout << "Ievadi trijstura malu" << endl;
+	cin >> mala;
+	cout << mala*mala*sqrt(3)/4;
+}
+void trijsturis()
+{
+	double mala, h;
+	cout << "Ievadi malu un augstumu";
+	cin >> mala >> h;
+	cout << mala* h / 2;
+}
+void trapece()
+{
+	double pamats1, pamats2, h;
+	cout << "Ievadi divus pamatus un augstumu";
+	cin>> pamats1>> pamats2>> h;
+	cout<< (pamats1 + pamats2)* h/2;
+}
+int main()
+{
+	string name, surname,parole;
+	cout << "Ievadi ludzu savu vardu"<<endl;
+	cin >> name;
+	cout << "Ievadi ludzu savu uzvardu" << endl;
+	cin >> surname;
+	if (name == "Daniels"&&surname=="Lappa") 
+	{	cout << "viss ir labi,bet vajag paroli";
+		cin >> parole;
+		if (parole == "0000") { cout << "access permitted"; }
+			else { cout << "acess denied"; }
+	}
+	
+	else { cout << "acess denied"; }
+
+
+	return 0;
+}
