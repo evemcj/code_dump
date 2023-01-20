@@ -1,0 +1,202 @@
+#include <iostream> //including the only library,input output on screen library
+using namespace std;
+
+
+template <typename T> //using a template,which allows to write a code without specifying the 
+                      //final data type. The declaration of substituition name should be used before 
+                      //any new class or function declaration outside the class                 
+class Node
+{
+public:
+	T value; //REPLACING THE SUBSTITUITION NAME
+	Node*pNext = nullptr; //declairing pointers which are not pointing to anything yet 
+	Node*pPrevious = nullptr;
+};
+
+
+template <typename T>
+class Stack //creating a superclass
+{
+public:
+
+	~Stack(void); //declairing a destructor function
+	void push(T value); //declairing a push function
+	Node<T>* nodePop(void); //declairing a function with specific pointer values in Node class
+	T pop(void); //declairing a function with a return value of T
+	int size(void);
+protected: 
+	int count = 0; //creating a count variable
+	Node<T>*pTop = nullptr; //declairing a pointer which is not pointing anything yet and the value is stored 
+	                      // in Node 
+};
+
+
+template <typename T>
+class Queue : protected Stack<T> //subclass Queue inherits data from superclass Stack and all the inherited 
+	                             //data beckomes protected
+{
+private:
+	Node<T>*pFront = nullptr; //declairing a protected pointer,which initially points to nothing
+public:
+	Queue(void); //declairing constructor
+	~Queue(void); //declairing destructor
+	virtual void enqueue(T value); //functions made virtual so that the code can be inherited in all cases
+	virtual Node<T>*nodeDequeue(void); //using Node class data
+	virtual T dequeue(void);
+};
+
+
+template <typename T>
+Stack<T>::~Stack(void) //Stack destructor,used for delete expressions
+{
+	while (pTop != nullptr) //as long as pTop pointor is pointing to something
+	{
+		delete nodePop(); //delete everything with in nodePop function
+	}
+}
+
+
+template <typename T>
+void Stack<T>::push(T value)
+{
+	Node<T>*pTmp = new Node<T>;  //pointing to a created new Node
+	pTmp->value = value; //value variable stored in class node takes what pTmp is pointing to 
+	                    //and equals it to a "value" variable passed in brackets
+	pTmp->pNext = pTop; //pNext takes what results as a pTmp pointer and finds the object it points to
+	pTop = pTmp; // pTop is pointing to the same thing as pTmp
+}
+
+
+template <typename T>
+Node<T>*Stack<T>::nodePop(void)
+{
+	Node<T>*pTmp = pTop; //pTmp points to whatever pTop points to
+	if (pTop != nullptr) pTop = pTop->pNext; //if pTop is pointing to something the pTop points to whatever pNext 
+	                                         //is pointing to
+	return pTmp; //return the value pTmp is pointing to
+}
+
+template <typename T>
+T Stack<T>::pop(void)
+{
+	Node<T>*pTmp = nodePop(); //pointer points to the return value of nodePop function
+	int ret = 0; //variable for return value,which initially equals to 0
+
+	if (pTmp != nullptr) //if pointer does not point to an empty space
+	{
+		ret = pTmp->value; //ret equals to
+	}
+	else
+	{
+		throw "Stack empty"; //a value can't be returned as a stack is empty,therefore the exception is thrown
+	}
+	delete pTmp; //delete pointer
+	return ret;  //return the ret value
+}
+
+
+
+template <typename T>
+void Queue<T> ::enqueue(T value)
+{
+	this->push(value); //this pointer points to itself, so it calls push function and its pointer
+
+	if (pFront == nullptr) pFront = pTop; // if the pFront pointer doesn't point to anything ,therefore
+	                                      // both pointers are pointing to the same thing
+	else (pTop->pNext)->pPrevious = pTop; //makes a backward pointing motion
+}
+
+template <typename T>
+Node<T>*Queue<T>::nodeDequeue(void) 
+{
+	Node<T>*pTmp = pFront;  
+	if (pFront != nullptr) //if pointer is not pointing to empty space
+	{
+		pFront = pFront->pPrevious; //pFront points to the same thing to which points pPrevious
+		if (pFront != nullptr)pFront->pNext = nullptr; //if pFront still doesn't point to an empty space
+		                                               //it points to the same thing as pNext does which is empty
+	}
+	return pTmp;
+}
+
+
+template <typename T>
+Queue<T>::Queue(void) //Queue constructor definition
+{
+	pFront = pTop = nullptr; //both pointers are pointing to nothing
+}
+
+
+template <typename T>
+Queue<T>::~Queue(void) //Queue destructor inheriting code from Stack destructor
+{
+
+}
+
+
+
+template <typename T> 
+T Queue<T>::dequeue(void)
+{
+	Node<T>*pTmp = nodeDequeue(); //the pointer is pointing to whichever value is returned 
+	                              //in nodeDequeue function
+	T ret = 0;    //declairing a variable locally,with enitial value of 0
+
+	if (pTmp != nullptr) //if a pointer is not pointing to an empty space,i e points to something
+
+	{
+		ret = pTmp->value; //change ret value to the "value" to which the pointer is pointing
+	}
+	else //if it is not pointing to anything
+	{
+		throw "Queue empty"; //a value can't be returned as a queue is empty,therefore the exception is thrown
+	}
+	if (pFront == nullptr) pTop = pFront; //if a pFront pointer is not pointing to anything,then it is pointing
+	                                      //to the same thing as a pFront
+	delete pTmp; //delete a pointer
+	return ret; //return the ret value
+}
+
+
+
+int main(void)
+{
+	Stack<int> MyStack; //creating an object of type int to pass data and functions into main
+	                    //and identifying specific data type which will be used
+	Queue<int> MyQueue;
+
+	for (int count = 0; count < 20; count++) // while a value of count does not exceed or equal 20 loop
+		                                     // starting from 0
+	{
+		MyStack.push(count); //calling functions using count valuep
+		MyQueue.enqueue(count);
+	}
+	try //using a throw catch method to see weather the stack is not empty
+	{
+		cout << "Stack output" << endl;
+		while (true) //while stack exists
+		{
+			cout << MyStack.pop() << " "; //function pop is called
+
+		}
+	}
+	catch (...) //if a stack has finished throws a line
+	{
+		cout << endl;
+	}
+	try //using a throw catch method to see weather the queue is not empty
+	{
+		cout << "Queue output" << endl;
+		while (true) // while a queue exists
+		{
+			cout << MyQueue.dequeue() << " "; //the function deque is called
+
+		}
+	}
+	catch (...) //if a queue has finished throws a line
+	{
+		cout << endl;
+	}
+
+	return 0;
+}
