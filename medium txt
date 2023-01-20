@@ -1,0 +1,68 @@
+#pragma once //controls a file to be included only once in a single compilation
+#include <iostream> //including a standar input/output library
+#include <string> //including a library for strings
+#include <fstream> //including a library for input and output data of files
+#include <vector> //including vector library
+
+using namespace std; //using a standart namespace
+
+class SalesData //declairing a class to hold all the methods and data
+{
+private: //section for holding private access type data/methods ,i e can be called only within member 
+		 //functions
+	ifstream inputfile; //declairing a stream for inputung data from file
+	ofstream outputfile; //declairing a stream for outputing data into file
+	vector<int> salesrecords; //declairing a vector to hold data
+	void createAsterisks(vector<int> salesrecords); //declairing a function with no return value and a 
+													//vector parameter
+public: //section for holding public acces type data/methods,i e can be called within any function
+	void loadDataFromFile(string filename); //declairing  functions of no return value and a string 
+											//parameter
+	void saveBarChartToFile(string filename);
+};
+
+void SalesData::loadDataFromFile(string filename) //defining a function declaired in SaledData class
+{
+	int i; //declairing a local variable for local holding of data
+	inputfile.open(filename); // opening a file
+	while (!inputfile.eof())  // looping until the end of file 
+	{
+		inputfile >> i; //inputing a data into a variable
+
+		salesrecords.push_back(i); //pushing a varriable onto a vector
+	}
+	inputfile.close(); //closing a file
+}
+void SalesData::saveBarChartToFile(string filename) //defining a function declaired in SalesData class
+{
+	outputfile.open(filename); //opening a file
+	createAsterisks(salesrecords); //calling a function
+	outputfile.close(); //closing a file 
+}
+
+void SalesData::createAsterisks(vector<int> salesrecords)
+{
+	outputfile << "SALES BAR CHART" << endl; //outputing text into a file
+	outputfile << "(each * equals £100)" << endl;
+	outputfile << endl;
+	for (int i = 0; i<salesrecords.size(); i++) //looping util the end of data in vector
+	{
+		outputfile << "Store " << i + 1 << " "; //puting out the serial number of an asterisks set
+
+		for (int h = 1; h <= salesrecords[i] / 100; h++) //putting out an asterisk for each hundret in 
+														 //integer
+		{
+
+			outputfile << "*"; //otputing an asterisk
+		}
+		outputfile << endl; //outputing empty line
+	}
+
+}
+int main(void) //declairing a main function
+{
+	SalesData myData; //declairing a local object to use data from SalesData class
+	myData.loadDataFromFile("sales.txt"); //calling functions specifying the name of a file
+	myData.saveBarChartToFile("graph.txt");
+	return 0; //returning integer into a main
+}
