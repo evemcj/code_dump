@@ -1,0 +1,86 @@
+include <iostream>
+using namespace std;
+double summ(double a, double b)
+{
+    return a + b;
+}
+double subs(double a, double b)
+{
+    return a - b;
+}
+double div(double a, double b)
+{
+    return a / b;
+}
+double mult(double a, double b)
+{
+    return a * b;
+}
+double entn()
+{
+    double num1;
+    cout << "enter num " << endl;
+    cin >> num1;
+    return num1;
+
+}
+void menu()
+{
+    int choice;
+
+    do
+    {
+
+
+        cout << endl
+            << " 1 - summ.\n"
+            << " 2 - substract.\n"
+            << " 3 - div.\n"
+            << " 4 - mult.\n"
+            << " 5 - absolute value.\n"
+            << " 6- Exit.\n"
+            << " Enter your choice and press return: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            double num1, num2;
+
+            cout << "The summ is" << endl << num1 << "+" << num2 << "=" << summ(num1, num2);
+            break;
+        case 2:
+            num1 = entn();
+            num2 = entn();
+            cout << "The subs is" << endl << num1 << "-" << num2 << "=" << subs(num1, num2);
+            break;
+        case 3:
+            num1 = entn();
+            num2 = entn();
+            cout << "The div is" << endl << num1 << "/" << num2 << "=" << div(num1, num2);
+            break;
+        case 4:
+            num1 = entn();
+            num2 = entn();
+            cout << "The subs is" << endl << num1 << "*" << num2 << "=" << mult(num1, num2);
+            break;
+        case 5:
+            num1 = entn();
+            cout << abs(num1);
+            break;
+        case 6:
+            cout << "End of Program.\n";
+            break;
+        default:
+            cout << "Not a Valid Choice. \n"
+                << "Choose again.\n";
+            break;
+        }
+
+    } while (choice != 6);
+}
+int main()
+{
+    menu();
+    return 0;
+}
