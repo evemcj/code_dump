@@ -1,0 +1,94 @@
+/* File Handling with C++ using ifstream & ofstream class object*/
+/* To write the Content in File*/
+/* Then to read the content of file*/
+#include <iostream>
+
+/* fstream header file for ifstream, ofstream,
+fstream classes */
+#include <fstream>
+#include <string>
+
+using namespace std;
+#include <windows.h>
+using namespace std;
+void yolo() {
+
+	ofstream fout;
+
+	string line;
+
+
+	fout.open("sample.txt");
+
+	// Execute a loop If file successfully opened
+	int i = 0;
+	while (i != 3) {
+
+		// Read a Line from standard input
+		getline(cin, line);
+		i++;
+		// Press -1 to exit
+		if (line == "-1")
+			break;
+
+		// Write line in file
+		fout << line << endl;
+	}
+}
+int DisplayResourceNAMessageBox()
+{
+	int msgboxID = MessageBox(
+		NULL,
+		(LPCWSTR)L"Resource not available\nDo you want to try again?",
+		(LPCWSTR)L"Account Details",
+		MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2
+	);
+
+	switch (msgboxID)
+	{
+	case IDCANCEL:
+
+		exit(-1);
+	case IDTRYAGAIN:
+
+		DisplayResourceNAMessageBox();
+	case IDCONTINUE:
+		yolo();
+		;
+	}
+
+	return msgboxID;
+}
+
+// Driver Code
+int main()
+{
+
+	//ofstream fout;
+
+	//string line;
+
+
+	//fout.open("sample.txt");
+
+	//// Execute a loop If file successfully opened
+	//while (line!="stop") {
+
+	//	// Read a Line from standard input
+	//	getline(cin, line);
+
+	//	// Press -1 to exit
+	//	if (line == "-1")
+	//		break;
+
+	//	// Write line in file
+	//	fout << line << endl;
+	//}
+
+	// Close the File
+	//fout.close();
+
+	DisplayResourceNAMessageBox();
+
+	return 0;
+}
