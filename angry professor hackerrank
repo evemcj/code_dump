@@ -1,0 +1,73 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+class Person {
+public:
+    int age;
+    string  name;
+  
+};
+class Student: public Person {
+public:
+   int cur_id;
+   int entries;
+   int mark;
+   int sum=0;
+   int i = 0;
+   vector <int> marks;
+   virtual void getdata();
+   virtual void putdata();
+
+};
+void Student::getdata()
+{
+    cout << "Enter age/name/cure_id";
+    cin >> age >> name>>cur_id;
+    cout << "how many entries do you have?";
+    cin >> entries;
+    do
+    {
+        cout << "Enter mark";
+        cin >> mark;
+        marks.push_back(mark);
+        entries--;
+    } while (entries != 0);
+};
+void Student::putdata()
+{
+    cout << age << endl << name<<endl<<cur_id;
+    do {
+        sum=sum+marks[i];
+        i++;
+    } while (i < marks.size());
+        cout << sum;
+};
+class Professor:public Person {
+    public:
+    int publications;
+    int cur_id;
+    void getdata();
+    void putdata();
+};
+void Professor::getdata()
+{
+    cout << "Enter enter publications / cur_id/name/age";
+    cin >> publications >> cur_id >> name >> age;
+};
+void Professor::putdata()
+{
+    cout <<endl<< publications << endl << cur_id << endl << name << endl << age<<endl  ;
+};
+int main() {
+    Student st;
+    Professor pr;
+    st.getdata();
+    st.putdata();
+    pr.getdata();
+    pr.putdata();
+    return 0;
+}
