@@ -1,0 +1,75 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+void getBuyValues(string& stockname, double& unitstockbuyprice, double& buycommission, int& amountbought)
+{
+	cout << "Please enter stock name: ";
+	getline(cin, stockname); //getline is used in order to handle multiword names
+
+	cout << "Please enter unit stock buy price: ";
+	cin >> unitstockbuyprice;
+
+	cout << "Please enter amount bought: ";
+	cin >> amountbought;
+
+	cout << "Please enter % commission for buy (expressed as decimal): ";
+	cin >> buycommission;
+	cout << "---------------------------------------------------" << endl;
+
+}
+void getSaleValues(double& unitstocksaleprice, double& salecommission, int& amountsold)
+{
+	cout << "Please enter unit stock sale price: ";
+	cin >> unitstocksaleprice;
+	
+	cout << "Please enter amount sold: ";
+	cin >> amountsold;
+
+	cout << "Please enter % commission for sale (expressed as decimal): ";
+	cin >> salecommission;
+	cout << "---------------------------------------------------" << endl;
+
+}
+
+void displayResults(const string stockname, const double unitstockbuyprice, const double buycommission, 
+	const int amountbought, const double unitstocksaleprice, const double salecommission, const int amountsold)
+{
+	cout << "---------------------------------------------------" << endl;
+	cout << "Stock name = " << stockname << endl;
+	cout << "---------------------------------------------------" << endl;
+	cout << "Unit stock buy Price = " << unitstockbuyprice << endl;
+	cout << "% buy commission = " << buycommission << endl;
+	cout << "Amount bought = " << amountbought << endl;
+	cout << "Total paid = " << amountbought * unitstockbuyprice * (1 + buycommission) << endl;
+	cout << "---------------------------------------------------" << endl;
+	cout << "---------------------------------------------------" << endl;
+	cout << "Unit stock sale Price = " << unitstocksaleprice << endl;
+	cout << "% sale commission = " << salecommission << endl;
+	cout << "Amount sold = " << amountsold << endl;
+	cout << "Total gained = " << amountsold * unitstocksaleprice * (1 - salecommission) << endl;
+	cout << "---------------------------------------------------" << endl;
+}
+void salesProgram(void)
+{
+	string stockname;
+	double unitstockbuyprice, unitstocksaleprice = 0;
+	double buycommission = 0, salecommission = 0;
+	int amountbought = 0, amountsold = 0;
+	
+	getBuyValues(stockname, unitstockbuyprice, buycommission, amountbought);
+	getSaleValues(unitstocksaleprice, salecommission, amountsold);
+	displayResults(stockname, unitstockbuyprice, buycommission, amountbought, unitstocksaleprice, salecommission, amountsold);
+
+
+}
+
+int main(void)
+{
+
+	salesProgram();
+
+
+	return 0;
+}
