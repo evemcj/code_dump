@@ -1,0 +1,51 @@
+#include <iostream>
+#include <windows.h>
+using namespace std;
+int DisplayResourceNAMessageBox()
+{
+    int msgboxID = MessageBox(
+        NULL,
+        (LPCWSTR)L"Reskuasckuqgaucge\nDo you want to try again?",
+        (LPCWSTR)L"Account Details",
+        MB_ICONHAND | MB_HELP | MB_DEFBUTTON2
+    );
+
+    switch (msgboxID)
+    {
+    case IDHELP:
+        cout << "HELP";
+        break;
+    case IDOK:
+        break;
+   
+    }
+
+    return msgboxID;
+}
+int DisplayResourceNAMessageBox1()
+{
+    int msgboxID = MessageBox(
+        NULL,
+        (LPCWSTR)L"Resource not sdfsv\nDo you want to taseacary again?",
+        (LPCWSTR)L"Account Details",
+        MB_ICONHAND | MB_OKCANCEL | MB_DEFBUTTON2
+    );
+
+    switch (msgboxID)
+    {
+    case IDOK:
+        cout << "CANCEL";
+        break;
+    case IDCANCEL:
+
+        break;
+    }
+
+    return msgboxID;
+}
+int main()
+{
+    DisplayResourceNAMessageBox();
+    DisplayResourceNAMessageBox1();
+    return 0;
+}
