@@ -1,0 +1,153 @@
+#pragma once //controls a file to be included only once in a single compilation
+#include<iostream> //including a input/output library
+#include<string> //including a library for strings
+#include<fstream> //including library for input/output for files
+#include<vector> //including library for vectors
+
+using namespace std; //including standard namespace
+
+class OrganizationRecord //declairing a class to get a data for organization records
+{
+private:
+
+public: //section for declairing public variable,i.e. they can be called within any function
+	string name; //declairing a string for holding a name 
+	string occupation; //declairing a string for holding a occupation
+	string department; //declairing a string for holding a department
+};
+class HRRecord  //declairing a class to get a data for HR records
+{
+private:
+
+public:
+	string adress; //declairing strings for getting informaton and pushing on to vector
+	string phonenumber;
+	string ninnumber;
+};
+class PayrollRecord //declairing a class to get a payroll records data
+{
+private:
+
+public:
+	string number; //declairing a string for getting data
+	double salary; //declairing a variable for holding a salary numbers 
+};
+class PayrollProcessing //declairing a class to hold all the needed methods to run the 
+						//programm
+{
+private: //section for holding private acceess type information,i.e. can be called only within the members of a function
+	ifstream inputfile; //declairing a stream object for inputing the information from the file into a program
+	ofstream outputfile; //declairing a stream object for outputing the information into a file
+	vector <OrganizationRecord> OrganizationRecords; //declairing a vector to hold an information from a 
+													 //number of strings,stored Organization Record class
+	vector <HRRecord> HRRecords; //declairing a vector to hold an information which willl be pushed on   
+								 //it from strings stores in HRRecords class
+	vector <PayrollRecord> PayrollRecords; //declairing a vector to hold an information which will be pushed     
+										   //on it by data types which are held in PayrollRecord class
+public: //section for holding public access type methods, i e they can be called with in any function
+	void loadOrganizationRecords(string filename); // declairing a function with no return value and a
+												   // string parameter
+	void loadHRRecords(string filename); // declairing a function with no return value and a
+										 // string parameter
+	void loadPayrollRecords(string filename); // declairing a function with no return value and a
+											  // string parameter
+	void DisplayEmployeeOfSalaryGte(double salary); //declairing a function with no return value and a doubleparameter
+};
+void PayrollProcessing::loadOrganizationRecords(string filename) //function defenition ,which is declaired
+																 //within PayrollProcessing class
+{
+	OrganizationRecord blankRecord;  //creating an object for using member functions and data
+	string employeenumber; // declairing a local string to push an information from a file onto vector and         
+						   //to use it in a loop 
+	inputfile.open(filename); //opening a file to get data out of it
+	if (!inputfile) throw string("No Org File"); // checking ,weather there is a needed file by using 
+												 // throw-catch method
+
+	while (getline(inputfile, employeenumber)) //creating a loop which gets data out of file,until the file           
+											   //ends,i e until there is an employee number record
+	{
+		getline(inputfile, blankRecord.name); //inputing the information from the whole line into strings 
+											  //name of string after dot
+		getline(inputfile, blankRecord.occupation);
+		getline(inputfile, blankRecord.department);
+		OrganizationRecords.push_back(blankRecord); //pushing all the data on the vector
+	}
+
+	inputfile.close(); //closing the file
+}
+void PayrollProcessing::loadHRRecords(string filename) //defining a function,which is declaired in
+													   //PayrolProcessing class
+{
+	HRRecord blankRecord; //creating an object for using member functions and data
+	string employeenumber;// declairing a local string to push an information from a file onto vector
+	inputfile.open(filename);//opening a file to get data out of it
+
+	if (!inputfile) throw string("No HR File"); //checking ,weather there is a needed file by using 
+												// throw-catch method
+
+	while (getline(inputfile, employeenumber)) //creating a loop which gets all the information out file
+											   //checking,when it ends,and then stops
+	{
+		getline(inputfile, blankRecord.adress); //inputing the whole line data into strings
+		getline(inputfile, blankRecord.ninnumber);
+		getline(inputfile, blankRecord.phonenumber);
+		HRRecords.push_back(blankRecord);//pushing all the data from strings on the vector
+	}
+	inputfile.close(); //closing the file
+}
+void PayrollProcessing::loadPayrollRecords(string filename)
+{
+	PayrollRecord blankRecord; //declairing a local object to access data within PayrollRecord class
+	string employeenumber; //declairing a local string,to use in a loop and hold the employee number
+	inputfile.open(filename); //opening a file
+
+	if (!inputfile) throw string("No Payroll File"); //checking ,weather there is a needed file by using 
+													 // throw-catch method
+
+	while (getline(inputfile, employeenumber)) //creating a loop ,which gets data until the end of file
+	{
+		getline(inputfile, blankRecord.number); //getting a whoe line data into a string
+		inputfile >> blankRecord.salary; //getting a number into a type double variable
+		inputfile.ignore(); //ignoring the last recieved data,as as compiler gets it in twice 
+		PayrollRecords.push_back(blankRecord); //pushing all the data onto a vector
+	}
+	inputfile.close(); // closing a file
+}
+
+void PayrollProcessing::DisplayEmployeeOfSalaryGte(double salary) //defining a function,which is declaired in a payroll class
+{
+	int i; //declairing a local variable of type integer to use in a loop
+	for (i = 0; i < PayrollRecords.size(); i++) //looping until the end of data in vector
+	{
+		if (PayrollRecords[i].salary > salary) //making a statement in order to find a worker with a salary less then the one delaired
+											   // in a parameter of DisplayEmployeeOfSalary Gte function
+		{
+			cout << OrganizationRecords[i].name << endl; //outputing the strings pushed on vector with a
+														 //name (name of the vector[the number of a line].name of a string)
+			cout << HRRecords[i].adress << endl;
+			cout << OrganizationRecords[i].department << endl;
+			cout << PayrollRecords[i].salary << endl;
+
+		}
+
+	}
+}
+int main(void) //declairing a main function with a return type of integer and no parameters
+{
+	PayrollProcessing myProcessing; //creating an object to pass data and functions into main
+
+	try //using a throw catch method to see weather there is a needed file
+	{
+		myProcessing.loadOrganizationRecords("organization.txt"); //calling functions and specifying file name
+		myProcessing.loadHRRecords("hr.txt");
+		myProcessing.loadPayrollRecords("payroll.txt");
+		myProcessing.DisplayEmployeeOfSalaryGte(20000); // calling a function and specifying the amount of salary 
+														// workers who get less then that number will be displayed
+	}
+	catch (string errormessage) // if the file does not exist the  string error message wil be displayed
+	{
+		cout << "Error message: " << errormessage << endl;
+		system("pause"); //after an error message the program is paused
+	}
+	return 0; // return value has to be integer,so main returns 0
+}
