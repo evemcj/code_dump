@@ -1,0 +1,55 @@
+#include <iostream>
+#include <windows.h>
+
+using namespace std;
+bool isnotNumber(string s)
+{
+    for (int i = 0; i < s.length(); i++)
+        if (isdigit(s[i]) == false)
+            return true;
+
+    return false;
+}
+using namespace std;
+int DisplayResourceNAMessageBox()
+{
+    int msgboxID = MessageBox(
+        NULL,
+        (LPCWSTR)L"BYE\nDo you want to try again?",
+        (LPCWSTR)L"BYE",
+        MB_ICONEXCLAMATION | MB_OK | MB_DEFBUTTON2
+    );
+
+    switch (msgboxID)
+    {
+    case IDOK:
+        exit(0);
+
+    }
+
+    return msgboxID;
+}
+
+int main() {
+    string password;
+    string mypassword;
+    do {
+        cout << "Enter your password with numbers" << endl;
+        cin >> password;
+        if (isnotNumber(password)) {
+            cout << "That is not a number! "; DisplayResourceNAMessageBox();
+        };
+    } while (isnotNumber(password));
+
+    do {
+        cout << "Enter your new password again" << endl;
+        cin >> mypassword;
+        if (mypassword != password) {
+            cout << "It's wrong! ";
+        };
+    } while (mypassword != password);
+    cout << "Great!" << endl;
+    return 0;
+}
+
+
