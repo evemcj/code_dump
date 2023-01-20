@@ -1,0 +1,153 @@
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <cstdlib>
+using namespace std;
+bool isNumber(string s)
+{
+    for (int i = 0; i < s.length(); i++)
+        if (isdigit(s[i]) == false) return false;
+        else return true;
+}
+vector <string> select()
+{
+    
+    vector <string> v = { "2","3","4","5","6","7","8","9","10","A","K","Q","J" };//having more wouldnt affect probability
+    vector <string> a;
+ 
+    int random = 0;
+    srand((unsigned)time(NULL));
+
+    for (int i = 1; i <= 6; i++) {
+
+       
+        random = (rand() % v.size());
+
+        string y = v[random];
+        a.push_back(y);
+    }
+
+    return a;
+
+}
+
+int main()
+{
+    string compp,comppp, compb, win, res,extracard;
+
+    int resp = 0, resb = 0, respp = 0, i = 0, respb = 0;
+    vector <string> p;
+    vector <string> b;
+    while (i < 4) {
+
+        compp = select()[i];
+       
+        i++;
+        compb = select()[i];
+       
+        p.push_back(compp);
+        b.push_back(compb);
+        if (isNumber(compp) == true) { resp = stoi(compp); }
+        else { resp = 0; }
+        if (isNumber(compb) == true) { resb = stoi(compb); }
+        else { resb = 0; }
+        if (compp == "A") { resp = 1; }
+        if (compb == "A") { resb = 1; }
+        if (compp == "10") { resp = 0; }
+        if (compb == "10") { resb = 0; }
+
+        respp = respp + resp;
+        respb = respb + resb;
+        if (respp > 9) { respp = respp - 10; }//doesnt work
+        if (respb > 9) { respb = respb - 10; }
+        i++;
+    }
+    if (respp < 6) {
+        compp = select()[i]; i++;
+        p.push_back(compp);
+        if (isNumber(compp) == true) { resp = stoi(compp); }
+        else { resp = 0; }
+        if (compp == "A") { resp = 1; }
+        if (compp == "10") { resp = 0; }
+        respp = respp + resp;
+        if (respp > 9) { resp = respp - 10; }
+        extracard = "yes";
+
+    }
+    if (respb < 3) {
+        compb = select()[i]; i++;
+        b.push_back(compb);
+        if (isNumber(compb) == true) { resb = stoi(compb); }
+        else { resb = 0; }
+        if (compb == "A") { resb = 1; }
+        if (compb == "10") { resb = 0; }
+        respb = respb + resb;
+        if (respb > 9) { respb = respb - 10; }
+
+    }
+    if (respb==3&&extracard == "yes" && isNumber(compp) == true&&compp!="8")
+    {
+        compb = select()[i]; i++;
+        b.push_back(compb);
+        if (isNumber(compb) == true) { resb = stoi(compb); }
+        else { resb = 0; }
+        if (compb == "A") { resb = 1; }
+        if (compb == "10") { resb = 0; }
+        respb = respb + resb;
+        if (respb > 9) { respb = respb - 10; }
+    }
+    if (respb == 4 && extracard == "yes" && (compp == "2" || compp == "3" || compp == "4" || compp == "5" || compp == "6" || compp == "7"))
+    {
+        compb = select()[i]; i++;
+        b.push_back(compb);
+        if (isNumber(compb) == true) { resb = stoi(compb); }
+        else { resb = 0; }
+        if (compb == "A") { resb = 1; }
+        if (compb == "10") { resb = 0; }
+        respb = respb + resb;
+        if (respb > 9) { respb = respb - 10; }
+    }
+    if (respb == 5 && extracard == "yes" && ( compp == "4" || compp == "5" || compp == "6" || compp == "7"))
+    {
+        compb = select()[i]; i++;
+        b.push_back(compb);
+        if (isNumber(compb) == true) { resb = stoi(compb); }
+        else { resb = 0; }
+        if (compb == "A") { resb = 1; }
+        if (compb == "10") { resb = 0; }
+        respb = respb + resb;
+        if (respb > 9) { respb = respb - 10; }
+    }
+    if (respb == 5 && extracard == "yes" && ( compp == "6" || compp == "7"))
+    {
+        compb = select()[i]; i++;
+        b.push_back(compb);
+        if (isNumber(compb) == true) { resb = stoi(compb); }
+        else { resb = 0; }
+        if (compb == "A") { resb = 1; }
+        if (compb == "10") { resb = 0; }
+        respb = respb + resb;
+        if (respb > 9) { respb = respb - 10; }
+    }
+    if (respp == respb) { win = "TIE"; }
+    if (respp > respb) { win = "PLAYER"; }
+    if (respb > respp) { win = "BANKER"; }
+    cout << "PHand - BHand - Outcome \n";
+    for (int pp = 0; pp < p.size(); pp++) {
+        if (pp != 0) {
+            cout << ",";
+        }
+        cout << p[pp];
+    }
+    cout << "-";
+    for (int bb = 0; bb < b.size(); bb++) {
+        if (bb != 0) {
+            cout << ",";
+        }
+        cout << b[bb];
+    }
+    cout   << "-" << win;
+    return 0;
+}
