@@ -1,0 +1,303 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+enum state { Out_Of_Chocolate, No_Credit, Has_Credit, Dispense_Chocolate, Maintanence_Mode }; //declairing  list of enumerator definitions
+class StateContext; //pre declairing classes,i e telling compiler that the class will be declaired further
+class Transition;
+class NoCredit;
+class HasCredit;
+class Chocolate_Dispenser;
+
+class State
+{
+protected:
+	StateContext*CurrentContext; //saving the space for a pointer
+public:
+	State(StateContext*Context) { CurrentContext = Context; }//setting StateContext and CurrentContext pointing to 
+	                                                          //Context and saving there a value for both of them
+	virtual ~State(void) {} //Destructor,used for delete expressions
+
+
+};
+
+class StateContext
+{
+protected:
+	State*CurrentState = nullptr; //saving up space for a pointer which is not pointing to anything yet
+	int stateIndex = 0;
+	vector<State*> availableStates; //making vector State to point to the availble states to keep track of states
+	                                //used in a programm
+public:
+	virtual ~StateContext(void); //Destructor,used for delete expressions
+	virtual void setState(state newState); //declairing inheritable function for opperating the pointers
+	virtual int getStateIndex(void);
+};
+class Transition
+
+{
+public:
+	virtual bool insertMoney(int) { cout << "error" << endl; return false; } //functios with return value of type bool ,which
+	                                                                         //by default are false used to control statements
+	virtual bool makeSelection(int) { cout << "error" << endl; return false; }
+	virtual bool moneyRejected(void) { cout << "error" << endl; return false; }
+	virtual bool addChocolate(int) { cout << "error" << endl; return false; }
+	virtual bool dispense(void) { cout << "error" << endl; return false; }
+	virtual bool enterPin(int pin) { cout << "error" << endl; return false; }
+	virtual bool exit(void) { cout << "error" << endl; return false; }
+};
+StateContext::~StateContext(void)
+{
+	for (int i = 0; i < this->availableStates.size(); i++)delete this->availableStates[i];
+	this->availableStates.clear();
+
+}
+
+void StateContext::setState(state newState)
+{
+	this->CurrentState = availableStates[newState];
+	this->stateIndex = newState;
+}
+
+int StateContext::getStateIndex(void)
+{
+	return this->stateIndex;
+}
+
+
+
+class ChocoState : public State, public Transition
+{
+public:ChocoState(StateContext*Context) :State(Context) {}
+};
+
+
+class OutOfChocolate : public ChocoState //current class inherits data from ChocoStatee class making all the data in it public
+{
+public:
+	OutOfChocolate(StateContext*Context) :ChocoState(Context) {} //setting the state according to class type
+	bool addChocolate(int number); //declairing functions within the class to use later for 
+								   //operattions on data variables available for particular class and pass in needed values
+	                               //also making it public
+	bool enterPin(int pin);
+
+};
+class NoCredit : public ChocoState
+{
+public:
+	NoCredit(StateContext*Context) :ChocoState(Context) {}
+	bool exit(void); 
+	bool enterPin(int pin);
+	bool insertMoney(int credit);
+
+};
+class HasCredit : public ChocoState
+{
+public:
+	HasCredit(StateContext*Context) : ChocoState(Context) {}
+	bool insertMoney(int credit);
+	bool makeSelection(int option);
+	bool moneyRejected(void);
+
+
+};
+class DispenseChocolate : public ChocoState
+{
+public:
+	DispenseChocolate(StateContext*Context) : ChocoState(Context) {}
+	bool dispense(void);
+};
+class MaintananceMode : public ChocoState
+{
+public:
+	MaintananceMode(StateContext*Context) : ChocoState(Context) {}
+	bool exit(void);
+	bool addChocolate(int number);
+};
+
+
+
+class Chocolate_Dispenser : public StateContext, public Transition
+{
+	friend class OutOfChocolate; //declairing friendclasses for a Chocolate_Dispender,i e data from them can
+								 //be used in current class
+	friend class NoCredit;
+	friend class HasCredit;
+	friend class DispenseChocolate;
+	friend class MaintananceMode;
+private: //declaing private variables(used within the class)
+	int inventory = 0;
+	int credit = 0;
+	int pin = 54321;
+public: //declairing public methods(i e used openly)
+	Chocolate_Dispenser(void);
+	bool insertMoney(int credit);
+	bool makeSelection(int option);
+	bool moneyRejected(void);
+	bool addChocolate(int number);
+	bool dispense(void);
+	bool enterPin(int pin);
+	bool exit(void);
+
+};
+bool Chocolate_Dispenser::insertMoney(int credit)
+{
+	return ((ChocoState*)CurrentState)->insertMoney(credit); //returning the values which are returned in functions
+	                                                           //to which the pointer is pointing(i e true or false)
+}
+bool Chocolate_Dispenser::makeSelection(int option)
+{
+	return ((ChocoState*)CurrentState)->makeSelection(option);
+}
+bool Chocolate_Dispenser::moneyRejected(void)
+{
+	return ((ChocoState*)CurrentState)->moneyRejected();
+}
+bool Chocolate_Dispenser::addChocolate(int number)
+{
+	return ((ChocoState*)CurrentState)->addChocolate(number);
+}
+bool Chocolate_Dispenser::dispense(void)
+{
+	return ((ChocoState*)CurrentState)->dispense();
+}
+bool Chocolate_Dispenser::enterPin(int pin)
+{
+	return ((ChocoState*)CurrentState)->enterPin(pin);
+}
+bool Chocolate_Dispenser::exit(void)
+{
+	return ((ChocoState*)CurrentState)->exit();
+}
+
+bool OutOfChocolate::enterPin(int pin)
+{
+
+	if (((Chocolate_Dispenser*)CurrentContext)->pin == pin)
+	{
+		cout << "pin correct" << endl;
+		return true;
+	}
+	else { return false; }
+}
+
+bool NoCredit::enterPin(int pin)
+{
+
+	if (((Chocolate_Dispenser*)CurrentContext)->pin == pin)//if a default value of pin equals to the one which
+		                                                   //is carried into the function
+	{
+		cout << "pin correct" << endl;
+		return true; //set a bool to be true
+	}
+	else { return false; } //otherwise set a bool to be false
+}
+bool NoCredit::exit(void)
+{
+	return true; //exit function returns true value at all times
+	             //and a pointer by default is a nullptr
+}
+
+bool OutOfChocolate::addChocolate(int number)
+{
+	((Chocolate_Dispenser*)CurrentContext)->inventory += number; //CurrentContext points to a value of inventory
+	                                                             //to which the nu,ber carried into the function is added
+	cout << "Adding Chocolate...Inventory=" << ((Chocolate_Dispenser*)CurrentContext)->inventory << endl;
+	CurrentContext->setState(Has_Credit); //the state is set tio be NoCredit
+	return true; //and the bool returns true
+}
+bool NoCredit::insertMoney(int credit)
+{
+	((Chocolate_Dispenser*)CurrentContext)->credit += credit;
+	cout << "Adding Credit...Credit= " << ((Chocolate_Dispenser*)CurrentContext)->credit << endl;
+	return true;
+}
+bool HasCredit::insertMoney(int credit)
+{
+	((Chocolate_Dispenser*)CurrentContext)->credit += credit;
+	cout << "Adding Credit...Credit= " << ((Chocolate_Dispenser*)CurrentContext)->credit << endl;
+	return true;
+}
+bool HasCredit::makeSelection(int option)
+{
+	
+	cout << "You have selected " << option << "bar(s) of chocolate" << endl;
+
+	if (((Chocolate_Dispenser*)CurrentContext)->inventory < option) //if the number of chocolates present are less than the number chosen
+	{
+		cout << "Error!You have selected more chocolate than machine contains" << endl;
+		return true;
+	}
+	if (((Chocolate_Dispenser*)CurrentContext)->credit < option) //if the number of chocolates chosen is more than the number allowed by credit
+	{
+		cout << "Error! You don't have enough money for that selection" << endl;
+		return true;
+	}
+	cout << "Credit and inventory is sufficient for your selection" << endl;
+	((Chocolate_Dispenser*)CurrentContext)->inventory -= option; //save the number of chocolates to be the one which was saves in inventory,to
+	                                                              //it minus the number of options carried into the function
+	((Chocolate_Dispenser*)CurrentContext)->credit -= option;       //and credit to its value minus number of options
+	CurrentContext->setState(Dispense_Chocolate);
+
+			return true;
+		
+	
+}
+
+bool HasCredit::moneyRejected(void)
+{
+	cout << "Rejecting money...." << endl;
+	((Chocolate_Dispenser*)CurrentContext)->credit =0;   // set credit to be equal to 0
+	CurrentContext->setState(No_Credit); //changing state to No Credit
+	return true;
+}
+
+bool DispenseChocolate::dispense(void)
+{
+	cout << "Dispensing..." << endl;
+	cout << "Inventory = " << ((Chocolate_Dispenser*)CurrentContext)->inventory << endl; //putting out the value of invenotry
+	cout << "Credit = " << ((Chocolate_Dispenser*)CurrentContext)->credit << endl; //and value of credit
+
+	if (((Chocolate_Dispenser*)CurrentContext)->inventory == 0) CurrentContext->setState(Out_Of_Chocolate);//setting state out of chocolate if inventory is 0
+	else if (((Chocolate_Dispenser*)CurrentContext)->credit == 0) CurrentContext->setState(No_Credit);//checking if sredit is 0,and if it is 0,changing state to no credit
+	else CurrentContext->setState(Has_Credit);//otherwisesetting state to has credit
+	return true;
+}
+
+Chocolate_Dispenser::Chocolate_Dispenser(void)
+{
+	this->availableStates.push_back(new OutOfChocolate(this)); //pushing all the states values on vector called state
+	this->availableStates.push_back(new NoCredit(this));
+	this->availableStates.push_back(new HasCredit(this));
+	this->availableStates.push_back(new DispenseChocolate(this));
+
+	this->setState(Out_Of_Chocolate);
+}
+
+
+int main(void)
+{
+	Chocolate_Dispenser MyDispenser; //creating an object  to pass data and functions into main
+
+	MyDispenser.addChocolate(10); 
+	cout << endl;
+	MyDispenser.makeSelection(2);
+	cout << endl;
+	MyDispenser.insertMoney(10);
+	cout << endl;
+	MyDispenser.makeSelection(20);
+	cout << endl;
+	MyDispenser.makeSelection(10);
+	cout << endl;
+	MyDispenser.insertMoney(10);
+	cout << endl;
+	MyDispenser.dispense();
+	cout << endl;
+	MyDispenser.enterPin(54321);
+	cout << endl;
+	MyDispenser.exit();
+
+	return 0;
+
+
+}
