@@ -1,0 +1,18 @@
+#include <iostream>
+using namespace std; 
+int main()
+{
+	int i = 0;
+	string myname;
+	do {
+		cout << "Enter my name" << endl;
+		cin >> myname;
+		if (myname == "no") { cout << "yes"; }
+		i++;
+	} while (myname != "Evelina"&&i!=3);
+	if (myname == "Evelina") { cout << "youŗe in the system!"; }
+	else { cout << "you re out of attempts"; exit(0); }
+
+	cout << "hello";
+return 0;
+}
