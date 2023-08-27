@@ -1,0 +1,107 @@
+#include <iostream>
+#include <fstream>
+#include <json/json.h>
+#include <algorithm>
+#include <stack>
+
+using namespace std;
+
+void saveCSV(string path, Json::Value data) {
+        ofstream csvFile(path);
+
+        csvFile << "id";
+        csvFile << ",";
+        csvFile << "name";
+        csvFile << ",";
+        csvFile << "bage";
+        csvFile << ",";
+        csvFile << "linkWebsite";
+        csvFile << ",";
+        csvFile << "partnerMail";
+        csvFile << ",";
+        csvFile << endl;
+
+        for (int i = 0; i < data["data"].size(); i++) {
+            csvFile << data["data"][i]["id"];
+            csvFile << ",";
+            csvFile << data["data"][i]["name"];
+            csvFile << ",";
+            csvFile << data["data"][i]["bage"];
+            csvFile << ",";
+            csvFile << data["data"][i]["linkWebsite"];
+            csvFile << ",";
+            csvFile << data["data"][i]["partnerMail"];
+            csvFile << endl;
+            i++;
+        }
+
+        csvFile.close();
+
+        cout << "Vector data has been saved to: " << path << endl;
+}
+
+vector<Json::Value> getInvalidDomainData(Json::Value data) {
+    vector<Json::Value> invalidData;
+    for (int i = 0; i < data["data"].size(); i++) {
+        string mail = data["data"][i]["partnerMail"].asString();
+        string site = data["data"][i]["linkWebsite"].asString();
+        std::transform(mail.begin(), mail.end(), mail.begin(), ::tolower);
+        std::transform(site.begin(), site.end(), site.begin(), ::tolower);
+        string mailDomain = mail.substr(mail.find("@") + 1, mail.length());
+        if (site.find(":\/\/" + mailDomain) == std::string::npos && site.find("." + mailDomain) == std::string::npos) {
+            invalidData.push_back(data["data"][i]);
+        }
+        i++;
+    }
+    return invalidData;
+}
+
+void arrayReverseKeys(map<string, string>& a) {
+    map<string, string>::iterator iter;
+    stack<string> keys;
+    vector<string> values;
+    for (iter = a.begin(); iter != a.end(); iter++) {
+        keys.push(iter->first);
+        values.push_back(iter->second);
+    }
+    map<string, string> result;
+    int i = 0;
+    while (!keys.empty()) {
+        string key = keys.top();
+        string value = values[i];
+        result[key] = value;
+        keys.pop();
+        i++;
+    }
+    a = result;
+}
+
+int main() {
+    std::ifstream data_file("response1.json", std::ifstream::binary);
+    Json::Value data;
+    data_file >> data;
+    saveCSV("response.csv", data);
+    vector<Json::Value> invalidData = getInvalidDomainData(data);
+    cout << "---------INVALID DATA----------" << endl;
+    for (int i = 0; i < invalidData.size(); i++) {
+        cout << invalidData[i] << endl;
+    }
+    cout << endl;
+
+    data_file.close();
+
+    map<string, string> a{ {"a","apple"}, {"b", "banana"}, {"c", "cherry" } };
+    cout << "INITIAL ARRAY" << endl;
+    map<string, string>::iterator i;
+    for (i = a.begin(); i != a.end(); i++)
+        cout << i->first << " : " << i->second << ", ";
+    cout << endl;
+
+    arrayReverseKeys(a);
+    cout << "REVERSED ARRAY" << endl;
+    for (i = a.begin(); i != a.end(); i++)
+        cout << i->first << " : " << i->second << ", ";
+    cout << endl;
+
+    return 0;
+}
